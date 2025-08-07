@@ -1,0 +1,165 @@
+[gd_scene load_steps=2 format=3 uid="uid://b0jsfq1xlps2t"]
+
+[ext_resource type="Script" uid="uid://b0asf44std1iw" path="res://addons/paletter/palette_panel.gd" id="1_b6r2f"]
+
+[node name="Paletter" type="GridContainer"]
+custom_minimum_size = Vector2(200, 0)
+anchors_preset = -1
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 183.0
+offset_bottom = 509.0
+script = ExtResource("1_b6r2f")
+
+[node name="Label" type="Label" parent="."]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Palette data"
+
+[node name="HSeparator" type="HSeparator" parent="."]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="LabelSource" type="Label" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Color palette source .gpl or .txt"
+
+[node name="BtnSource" type="Button" parent="VBoxContainer"]
+custom_minimum_size = Vector2(120, 0)
+layout_direction = 2
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+tooltip_text = "Select the .gpl or .txt file to be imported"
+theme_override_colors/font_color = Color(0.8745098, 0.8745098, 0.8745098, 1)
+text = "Select"
+
+[node name="SourcePath" type="Label" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 70)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.69135684, 0.6913568, 0.69135684, 1)
+text = "path"
+autowrap_mode = 1
+
+[node name="HSeparator2" type="HSeparator" parent="."]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="LabelColorPalette" type="Label" parent="VBoxContainer2"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+text = "ColorPalette resource"
+
+[node name="BtnSelColorPalette" type="Button" parent="VBoxContainer2"]
+custom_minimum_size = Vector2(120, 0)
+layout_direction = 2
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+tooltip_text = "Select the ColorPalette resource"
+text = "Select"
+
+[node name="ColorPalettePath" type="Label" parent="VBoxContainer2"]
+custom_minimum_size = Vector2(0, 70)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.69135684, 0.6913568, 0.69135684, 1)
+text = "path"
+autowrap_mode = 1
+
+[node name="HSeparator3" type="HSeparator" parent="."]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+
+[node name="VBoxContainer3" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="LabelLoad" type="Label" parent="VBoxContainer3"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+text = "Load colors into resource"
+
+[node name="BtnLoadToColorPalette" type="Button" parent="VBoxContainer3"]
+custom_minimum_size = Vector2(120, 0)
+layout_direction = 2
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+tooltip_text = "Load the imported color palette into the selected ColorPalette resource"
+text = "Load"
+
+[node name="HSeparator4" type="HSeparator" parent="."]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+
+[node name="VBoxContainer4" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="LabelLoad2" type="Label" parent="VBoxContainer4"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+text = "Export ColorPalette resource"
+
+[node name="BtnExportAsGpl" type="Button" parent="VBoxContainer4"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+tooltip_text = "Export the ColorPalette resource as a .gpl file"
+text = "Save As .gpl"
+
+[node name="HSeparator5" type="HSeparator" parent="VBoxContainer4"]
+modulate = Color(1, 1, 1, 0)
+custom_minimum_size = Vector2(0, 4)
+layout_mode = 2
+
+[node name="BtnExportAsTxt" type="Button" parent="VBoxContainer4"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+tooltip_text = "Export the ColorPalette resource as a .txt file"
+text = "Save As .txt"
+
+[node name="PickSrcDialog" type="FileDialog" parent="."]
+title = "Open a File"
+file_mode = 0
+access = 2
+filters = PackedStringArray("*.gpl", "*.txt")
+use_native_dialog = true
+
+[node name="PickColorPaletteDialog" type="FileDialog" parent="."]
+title = "Open a File"
+file_mode = 0
+filters = PackedStringArray("*.tres")
+use_native_dialog = true
+
+[node name="GplSaveDialog" type="FileDialog" parent="."]
+access = 2
+filters = PackedStringArray("*.gpl")
+use_native_dialog = true
+
+[node name="TxtSaveDialog" type="FileDialog" parent="."]
+access = 2
+filters = PackedStringArray("*.txt")
+use_native_dialog = true
+
+[connection signal="pressed" from="VBoxContainer/BtnSource" to="." method="_on_btn_src_pressed"]
+[connection signal="pressed" from="VBoxContainer2/BtnSelColorPalette" to="." method="_on_btn_tgt_pressed"]
+[connection signal="pressed" from="VBoxContainer3/BtnLoadToColorPalette" to="." method="_on_btn_load_pressed"]
+[connection signal="pressed" from="VBoxContainer4/BtnExportAsGpl" to="." method="_on_btn_export_as_gpl_pressed"]
+[connection signal="pressed" from="VBoxContainer4/BtnExportAsTxt" to="." method="_on_btn_export_as_txt_pressed"]
+[connection signal="file_selected" from="PickSrcDialog" to="." method="_on_src_dialog_file_selected"]
+[connection signal="file_selected" from="PickColorPaletteDialog" to="." method="_on_tgt_dialog_file_selected"]
+[connection signal="file_selected" from="GplSaveDialog" to="." method="_on_gpl_save_dialog_file_selected"]
+[connection signal="file_selected" from="TxtSaveDialog" to="." method="_on_txt_save_dialog_file_selected"]
