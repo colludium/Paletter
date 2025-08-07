@@ -1,3 +1,8 @@
+
+<img width="167" height="161" alt="Paletter_icon" src="https://github.com/user-attachments/assets/c2ab840d-e801-43b6-80b1-f6f9a6908bd8" />
+
+
+
 # Paletter
 #### Godot Plugin to import and export *.gpl and *.txt palette files.
 
