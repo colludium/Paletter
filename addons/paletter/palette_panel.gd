@@ -74,10 +74,11 @@ func get_color_data_from_source(path: String):
 	var file = FileAccess.open(path, FileAccess.READ)
 	var content = file.get_as_text(true)
 
-	if not content.contains(";Colors:"):
+	# These checks are hardly robust but better than nothing
+	if not content.contains("paint.net"):
 		is_txt = false
 
-	if not content.contains("#Colors:"):
+	if not content.contains("GIMP Palette"):
 		is_gpl = false
 
 	if not is_gpl and not is_txt:
@@ -90,42 +91,57 @@ func get_color_data_from_source(path: String):
 	var lines = content.split("\n")
 	var colorindex = 3 #gpl index
 	var name = ""
-
-	for i in lines.size():
-		lines[i] = lines[i].strip_edges(true, true)
-
-		if lines[i].contains("Name: "):
-			palette_name = lines[i].split("Name: ")[1]
-
-		#It's probably from the internet so color start line might vary
-		if is_gpl and lines[i].contains("#Colors:"):
-			colorindex = i
-		if is_txt and lines[i].contains(";Colors:"):
-			colorindex = i
-
-	var collines = lines.slice(colorindex, lines.size())
-	var line0 : String = collines.slice(0, 1)[0]
-	var colcount = line0.split(": ")[1].to_int()
-	#To get an array of cells, each with color data, remove first line
-	collines.remove_at(0)
 	color_array.clear()
 
-	for i in colcount:
-		var line : String = collines[i]
-		var newcolor: Color
-		var rgb: String
+	for i in lines.size():
+		var line : String = lines[i]
+		line.strip_edges(true, true)
 
+		if line.contains("Name: "):
+			palette_name = lines[i].split("Name: ")[1]
+
+		# Updated to conform with .gpl format v2 standards
+		# https://developer.gimp.org/core/standards/gpl/
 		if is_gpl:
-			rgb = line.split("\t")[3] # tab separator
+			if i == 0 or line.begins_with("Name:") or line.begins_with("Columns:"):
+				# Ignore header
+				continue
+			elif line.begins_with("#") or line == "":
+				# A comment line or an empty line, so ignore
+				continue
+			else:
+				# Might be color data, but I've seen different sources use
+				# space separators or tab separators (the standard is a space
+				# but LOPSEC use tabs...)
+				var sep = " " # The standard
+				if line.split("\t").size() >= 3:
+					# Must be a tab separator..?
+					sep = "\t"
 
-		else:
-			rgb = line.right(6)
-
-		if not rgb.is_valid_html_color():
-			continue
-
-		newcolor = Color.html(rgb)
-		color_array.push_back(newcolor)
+				# Now we know what the separator might be
+				# we just need to conform that there are 3 color elements
+				if line.split(sep).size() >= 3:
+					# Use the first 3 rgb values
+					var rgb_array = line.split(sep)
+					var r = int(rgb_array[0])
+					var g = int(rgb_array[1])
+					var b = int(rgb_array[2])
+					var newcolor = Color.from_rgba8(r, g, b)
+					color_array.push_back(newcolor)
+		if is_txt:
+			if line.begins_with(";"):
+				# Part of the header, or a comment
+				continue
+			elif line.length() != 8:
+				# Color data is an 8 digit hex string
+				continue
+			else:
+				# Commented out the alpha since it's not supported in .gpl
+				# var a = line.left(2)
+				var rgb = line.right(6)
+				var newcolor = Color.html(rgb)
+				# var newcolor = Color.html(rgb + a)
+				color_array.push_back(newcolor)
 
 	if color_array.is_empty():
 		reset_source_data()
@@ -193,13 +209,11 @@ func do_file_save(path: String, endswith: String) -> void:
 		str = ';paint.net Palette File
 ;Downloaded from Godot/Paleter
 ;Palette Name: ' + res_name + '
-;Description:
 ;Colors: ' + colcount + "\n"
 
 	else: # .gpl
 		str = 'GIMP Palette
 #Palette Name: ' + res_name + '
-#Description:
 #Colors: ' + colcount + "\n"
 
 	for color in pca:
@@ -211,8 +225,8 @@ func do_file_save(path: String, endswith: String) -> void:
 			var r = str(color.r8)
 			var g = str(color.g8)
 			var b = str(color.b8)
-			var tab = "\t"
-			str += r + tab + g + tab + b + tab + hex_str
+			var sep = " "
+			str += r + sep + g + sep + b + sep + hex_str
 
 	var file = FileAccess.open(path,FileAccess.WRITE)
 	file.store_string(str)
