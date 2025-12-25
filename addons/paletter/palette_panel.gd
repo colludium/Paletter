@@ -72,7 +72,7 @@ func get_color_data_from_source(path: String):
 		return
 
 	var file = FileAccess.open(path, FileAccess.READ)
-	var content = file.get_as_text(true)
+	var content = file.get_as_text()
 
 	# These checks are hardly robust but better than nothing
 	if not content.contains("paint.net"):
