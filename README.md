@@ -4,7 +4,7 @@
 
 
 # Paletter
-#### Godot 4 Plugin to import and export *.gpl and *.txt palette files.
+#### Godot 4.5+ Plugin to import and export *.gpl and *.txt palette files.
 
 This plugin will import a *.gpl (GIMP) or *.txt (paint.net) file and load it into a ColorPalette resource object of your choice. You can then open a standard Godot ColorPicker and load the ColorPalette object into the swatch panel. If you modify the swatch colors and save them as a new ColorPalette object then this plugin can export it to a *.gpl or *.txt file as well.
 
